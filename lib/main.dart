@@ -30,6 +30,7 @@ void settingUpSystemUIOverlay() {
       systemStatusBarContrastEnforced: false,
       systemNavigationBarColor: Colors.transparent,
       systemNavigationBarDividerColor: Colors.transparent));
+      
 // Setting SystmeUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 }

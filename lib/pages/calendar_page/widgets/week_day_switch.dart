@@ -22,50 +22,65 @@ class WeekdaySwitch extends StatelessWidget {
 
   void Function(DateTime selectedDay)? onDayChange;
 
-  late final controller = Get.put(WeekdaySwitchController(selectedDay));
+  late final controller = Get.put(WeekdaySwitchController(
+      DateTime(1900, 0, 0, 0, 0), selectedDay, DateTime(2300, 0, 0, 0, 0)));
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppBar(
-          title: Obx(
-            () => Text(
-                controller
-                    .mountData()
-                    .map((mountData) => DateFormat.MMMM(
-                            Localizations.localeOf(context).toString())
-                        .format(mountData))
-                    .join("-"),
-                style: context.textTheme.headlineLarge),
-          ),
-          actions: [
-            // IconButton(
-            //   onPressed: () {
-            //     controller.isExpanded(!controller.isExpanded());
-            //   },
-            //   icon: Obx(
-            //     () => controller.isExpanded()
-            //         ? Icon(Icons.arrow_drop_down_outlined)
-            //         : Icon(Icons.arrow_drop_up_outlined),
-            //   ),
-            // ),
-          ],
-        ),
-        createWeekLine(context),
-        
         SizedBox(
-          height: 100,
-          child: PageView.builder( 
-            controller: controller.currentDayPageController,
-            onPageChanged: (value) => controller.setSelectedDay(controller.anchorDay.add(Duration(days: value))),
-            itemBuilder: (context , dayIndex) {
-              return Text(dayIndex.toString());
-            }
+          height: 80,
+          child: PageView.builder(
+            itemBuilder: (cntx, index) => Container(color: Colors.amber),
           ),
         ),
 
-        // if (dateContentBuilder != null) dateContentBuilder!(context, controller.selectedDay()) 
+        Expanded(
+          child: PageView.builder(
+            itemBuilder: (cntx, index) => Container(color: Colors.blue),
+          ),
+        )
+
+        // // AppBar(
+        // //   title: Obx(
+        // //     () => Text(
+        // //         controller
+        // //             .mountData()
+        // //             .map((mountData) => DateFormat.MMMM(
+        // //                     Localizations.localeOf(context).toString())
+        // //                 .format(mountData))
+        // //             .join("-"),
+        // //         style: context.textTheme.headlineLarge),
+        // //   ),
+        // //   actions: [
+        // //     // IconButton(
+        // //     //   onPressed: () {
+        // //     //     controller.isExpanded(!controller.isExpanded());
+        // //     //   },
+        // //     //   icon: Obx(
+        // //     //     () => controller.isExpanded()
+        // //     //         ? Icon(Icons.arrow_drop_down_outlined)
+        // //     //         : Icon(Icons.arrow_drop_up_outlined),
+        // //     //   ),
+        // //     // ),
+        // //   ],
+        // // ),
+
+        // createWeekLine(context),
+
+        // SizedBox(
+        //   height: 100,
+        //   child: PageView.builder(
+        //     controller: controller.currentDayPageController,
+        //     onPageChanged: (value) => controller.setSelectedDay(controller.beginDay.add(Duration(days: value))),
+        //     itemBuilder: (context , dayIndex) {
+        //       return Text(dayIndex.toString());
+        //     }
+        //   ),
+        // ),
+
+        // // if (dateContentBuilder != null) dateContentBuilder!(context, controller.selectedDay())
       ],
     );
   }
@@ -89,13 +104,11 @@ class WeekdaySwitch extends StatelessWidget {
           Expanded(
             child: PageView.builder(
               controller: controller.weeksPageController,
-              onPageChanged: (weekIndex) =>
-                  controller.setSelectedWeekIndex(weekIndex),
               itemBuilder: (ctx, weekIndex) {
                 return Obx(
                   () => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: createDaysCards(context),
+                    children: createDaysCards(context, weekIndex),
                   ),
                 );
               },
@@ -115,9 +128,9 @@ class WeekdaySwitch extends StatelessWidget {
     );
   }
 
-  List<Widget> createDaysCards(BuildContext context) {
+  List<Widget> createDaysCards(BuildContext context, int weekIndex) {
     return controller
-        .selectedWeekDays()
+        .getWeekDays(weekIndex)
         .map((day) => dateButtonBuilder != null
             ? dateButtonBuilder!(context, day)
             : defaultDateBuilder(context, day))
@@ -155,5 +168,4 @@ class WeekdaySwitch extends StatelessWidget {
       ),
     );
   }
-
 }
